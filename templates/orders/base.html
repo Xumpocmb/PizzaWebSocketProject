@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <h1>Добро пожаловать, {{ user.username }}!</h1>
+    {% if user.userprofile.role == 'operator' %}
+        <p><a href="{% url 'create_order' %}">Создание нового заказа</a></p>
+        <a href="{% url 'orders_list' %}">Список заказов</a>
+        <!-- другие ссылки для оператора -->
+    {% elif user.userprofile.role == 'chef' %}
+        <a href="{% url 'orders_list' %}">Необработанные заказы</a>
+        <!-- другие ссылки для повара -->
+    {% endif %}
+    <p><a href="{% url 'profile' %}">Профиль пользователя</a></p>
+    <p><a href="{% url 'logout' %}">Выход из аккаунта</a></p>
+{% else %}
+    <h1>Добро пожаловать!</h1>
+    <!-- ссылки для неавторизованного пользователя -->
+    <p><a href="{% url 'register' %}">Регистрация</a></p>
+    <p><a href="{% url 'login' %}">Вход в аккаунт</a></p>
+{% endif %}
+<hr>
+{% block content %}
+
+{% endblock %}
+</body>
+</html>

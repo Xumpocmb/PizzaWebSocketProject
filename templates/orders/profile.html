@@ -1,0 +1,7 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+    <h2>Профиль пользователя</h2>
+    <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+    <p><strong>Роль:</strong> {{ user.userprofile.role }}</p>
+{% endblock %}

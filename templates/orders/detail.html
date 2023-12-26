@@ -1,0 +1,9 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+  <h2>Детали заказа</h2>
+  <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
+  <p><strong>Товары:</strong> {{ order.items }}</p>
+  <p><strong>Дата и время:</strong> {{ order.timestamp }}</p>
+  <p><strong>Статус:</strong> {% if order.is_completed %}Завершен{% else %}В обработке{% endif %}</p>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+  <h2>Обработка заказа</h2>
+  <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
+  <p><strong>Товары:</strong> {{ order.items }}</p>
+  <form method="post" action="{% url 'process_order' order.id %}">
+    {% csrf_token %}
+    <button type="submit">Завершить заказ</button>
+  </form>
+{% endblock %}

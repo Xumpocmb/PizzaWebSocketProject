@@ -1,0 +1,54 @@
+{% extends 'orders/base.html' %}
+
+{% block content %}
+    <h2>Список заказов</h2>
+    <div id="orders-container">
+        {% for order in orders %}
+            <div id="order-{{ order.id }}">
+                <a href="{% url 'order_detail' order.id %}">{{ order.customer_name }}</a><br>
+                {% if user.userprofile.role == 'chef' %}
+                    <form method="post" action="{% url 'process_order' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Завершить заказ</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        let socket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/orders/'
+        );
+
+        socket.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            let parentDiv = document.getElementById("orders-container");
+            let orderDiv = document.createElement("div");
+            let csrf_token = "{{ csrf_token }}";
+            orderDiv.setAttribute("id", "order-" + data.order_id);
+            orderDiv.innerHTML = "<a href='" + data.order_id + "'/>" + data.customer_name + "</a><br>";
+            {% if user.userprofile.role == 'chef' %}
+                orderDiv.innerHTML += "<form method='post' action='/orders/process/" + data.order_id + "/'>"
+                    + "<input type='hidden' name='csrfmiddlewaretoken' value='" + csrf_token + "'>"
+                    + "<button type='submit'>Завершить заказ</button></form>";
+            {% endif %}
+            parentDiv.appendChild(orderDiv);
+            console.log('Received order update for order ID ');
+        };
+
+        socket.onopen = function (e) {
+            console.log('Connection established');
+        };
+
+        socket.onclose = function (e) {
+            console.error('WebSocket closed unexpectedly', e);
+        };
+    </script>
+{% endblock %}
+
+
